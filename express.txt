@@ -1,0 +1,5 @@
+database & crud api
+-json
+komunikasi dengan frontend dan backend itu format nya json 
+
+gunanya postman, itu untuk bisa method post,put dan delete
