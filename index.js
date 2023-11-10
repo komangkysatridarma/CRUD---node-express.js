@@ -6,6 +6,7 @@ const authRoute = require('./routes/auth')
 const dbConfig = require('./config/database')
 const pool = mysql.createPool(dbConfig)
 const authenticateJWT = require('./middleware/auth')
+const cors = require('cors')
 
 pool.on('error', (err) => {
     console.log(err)
@@ -16,6 +17,8 @@ const app = express()
 
 //inisialisasi port
 const port = 3000
+//inisialisasi cors
+app.use(cors())
 //middeleware json perser
 app.use(express.json())
 //middelewere request body
