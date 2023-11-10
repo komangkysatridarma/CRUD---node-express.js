@@ -6,6 +6,54 @@ const {
 } = require("../traits/ApiResponse");
 const pool = mysql.createPool(dbConfig);
 
+//http://localhost:3000/search?keyword=mau cari apa
+const search = (req, res) => {
+  const keyword = req.query.keyword 
+
+  const query = `SELECT * FROM books WHERE nama LIKE '%${keyword}%'`
+
+  pool.getConnection((err, connection) => {
+    if(err) throw err
+
+    connection.query(query, (err, results) => {
+      if(err) throw err
+
+      if(results.length == 0){
+        return res.json({
+          message: 'Data tidak dapat ditemukan'
+        })
+      }
+
+      responseSuccess(res, results, 'Book successfully fetched')
+    })
+
+    connection.release()
+  })
+}
+
+const sortBy = (req, res) => {
+  const orderBy = req.query.order
+
+  //DESC / ASC
+  const query = `SELECT * FROM books ORDER BY nama ${orderBy}`
+
+  pool.getConnection((err, connection) => {
+    if(err) throw err
+
+    connection.query(query, (err, results) => {
+      if(err) throw err
+      if(results.length == 0){
+        responseNotFound(res)
+        return
+      }
+
+      responseSuccess(res, results, 'Book successfully fetched')
+    })
+
+    connection.release()
+  })
+}
+
 const getBooks = (req, res) => {
   const query = "SELECT * FROM books";
 
@@ -128,5 +176,7 @@ module.exports = {
   getBook,
   addBook,
   updateBook,
-  deleteBook
+  deleteBook,
+  search,
+  sortBy
 };

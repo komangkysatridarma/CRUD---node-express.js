@@ -2,8 +2,10 @@ const express = require('express')
 const mysql = require('mysql2')
 const bookRoute = require('./routes/book')
 const authorRoute = require('./routes/author')
+const authRoute = require('./routes/auth')
 const dbConfig = require('./config/database')
 const pool = mysql.createPool(dbConfig)
+const authenticateJWT = require('./middleware/auth')
 
 pool.on('error', (err) => {
     console.log(err)
@@ -11,6 +13,7 @@ pool.on('error', (err) => {
 
 //inisialisasi express
 const app = express()
+
 //inisialisasi port
 const port = 3000
 //middeleware json perser
@@ -35,9 +38,11 @@ app.get('/', (req, res) => {
     res.end()
 })
 
-app.use('/book', bookRoute)
+app.use('/book', authenticateJWT, bookRoute)
 app.use('/author', authorRoute)
+app.use('/auth', authRoute)
 
 app.listen(port, () => {
     console.log(`Server berjalan di http://localhost:${port}`)
 })
+
